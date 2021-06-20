@@ -8,12 +8,13 @@ using Microsoft.EntityFrameworkCore;
 public class DiretorController : ControllerBase{
     private readonly ApplicationDbContext _context;  
 
+//inejtar classe de contexto (inejção de dependencia)
     public DiretorController(ApplicationDbContext context) {
         _context = context;
 
     }
 
-    [HttpGet(("id"))]
+    [HttpGet("{id}")]
     public async Task<ActionResult<Diretor>> GetById(long id)
     {
          var diretor = await _context.Diretores.FirstOrDefaultAsync(diretor => diretor.Id == id);
@@ -34,7 +35,7 @@ public class DiretorController : ControllerBase{
         return Ok (diretor);
     }
 
-    [HttpPut]
+    [HttpPut("{id}")]
     public async Task<ActionResult<Diretor>> Put(long id, [FromBody] Diretor diretor)
     {
         diretor.Id = id;
@@ -45,7 +46,7 @@ public class DiretorController : ControllerBase{
     }
 
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     public async Task<ActionResult> Delete(long id)
     {
       var diretor = await _context.Diretores.FirstOrDefaultAsync(diretor => diretor.Id == id);
