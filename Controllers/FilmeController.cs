@@ -28,11 +28,12 @@ public class FilmeController : ControllerBase{
     } 
 
     [HttpPost]
-    public async Task <ActionResult<Filme>> Post ([FromBody] Filme filme){        
+    public async Task <ActionResult<FilmeOutputPostDTO>> Post ([FromBody] FilmeInputPostDTO filmeInputPostDTO){        
+        var filme = new Filme (filmeInputPostDTO.Titulo, filmeInputPostDTO.DiretorID);
         _context.Filmes.Add(filme);
         await _context.SaveChangesAsync();
-
-        return Ok (filme);
+        var filmeOutputPostDTO = new FilmeOutputPostDTO(filme.Id, filme.Titulo, filme.DiretorID);
+        return Ok(filmeOutputPostDTO);
     }
 
     [HttpPut("{id}")]
