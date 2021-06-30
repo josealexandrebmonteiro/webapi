@@ -26,9 +26,14 @@ public class DiretorController : ControllerBase{
     }
     
     [HttpGet]
-    public async Task<List<Diretor>> Get() {
+    public async Task<List<DiretorOutputGetDTO>> Get() {
+        var diretores = await _context.Diretores.ToListAsync();
+        var outputDTOList = new List<DiretorOutputGetDTO>();
+        foreach (Diretor diretor in diretores){
+            outputDTOList.Add (new DiretorOutputGetDTO (diretor.Id,diretor.Nome));
+        }
         
-        return await _context.Diretores.ToListAsync();
+        return outputDTOList;
 
     }
 
