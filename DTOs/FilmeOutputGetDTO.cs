@@ -1,7 +1,8 @@
-public class FilmeOutputPostDTO {
+public class FilmeOutPutGetDTO {
     public long Id { get; set; }
     public string Titulo { get; set; }
-    public FilmeOutputPostDTO (long id, string titulo) {
+
+    public FilmeOutPutGetDTO(long id, string titulo) {
         Id = id;
         Titulo = titulo;
     }

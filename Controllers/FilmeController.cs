@@ -15,24 +15,35 @@ public class FilmeController : ControllerBase{
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Filme>> GetById(long id)
+    public async Task<ActionResult<FilmeOutputGetIdDTO>> GetById(long id)
     {
-         var filme = await _context.Filmes.FirstOrDefaultAsync(filme => filme.Id == id);
-         return Ok(filme);
+         var filme = await _context.Filmes.Include(filme=>filme.Diretor).FirstOrDefaultAsync(filme => filme.Id == id);
+         //var filme = await _context.Filmes.FirstOrDefaultAsync(filme => filme.Id == id);
+         var filmeOutputGetIdDTO = new FilmeOutputGetIdDTO (filme.Id, filme.Titulo, filme.Diretor.Nome);
+         return Ok(filmeOutputGetIdDTO);
     }
     
     [HttpGet]
-    public async Task<List<Filme>> Get()
+    public async Task<List<FilmeOutPutGetDTO>> Get()
     {
-        return await _context.Filmes.ToListAsync();
+        var filmes =  await _context.Filmes.ToListAsync();
+        var outputDTOlist = new List<FilmeOutPutGetDTO>();
+        foreach (Filme filme in filmes) {
+            outputDTOlist.Add(new FilmeOutPutGetDTO(filme.Id, filme.Titulo));
+        }
+        return outputDTOlist;
     } 
 
     [HttpPost]
     public async Task <ActionResult<FilmeOutputPostDTO>> Post ([FromBody] FilmeInputPostDTO filmeInputPostDTO){        
-        var filme = new Filme (filmeInputPostDTO.Titulo, filmeInputPostDTO.DiretorID);
-        _context.Filmes.Add(filme);
+        var diretor = await _context.Diretores.FirstOrDefaultAsync (diretor => diretor.Id == filmeInputPostDTO.DiretorId);
+        if (diretor == null){
+            return NotFound("Diretor Não Encontrado");
+        }
+        var filme = new Filme(filmeInputPostDTO.Titulo, diretor.Id);
+        _context.Filmes.Add (filme);
         await _context.SaveChangesAsync();
-        var filmeOutputPostDTO = new FilmeOutputPostDTO(filme.Id, filme.Titulo, filme.DiretorID);
+        var filmeOutputPostDTO = new FilmeOutputPostDTO(filme.Id, filme.Titulo);
         return Ok(filmeOutputPostDTO);
     }
 
