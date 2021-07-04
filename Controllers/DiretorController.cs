@@ -17,21 +17,25 @@ public class DiretorController : ControllerBase{
     [HttpGet("{id}")]
     public async Task<ActionResult<DiretorOutputGetIdDTO>> GetById(long id)
     {
-        //var diretor = new Diretor(diretorInputGetIdDTO.Nome);
-        //await _context.Diretores.FirstOrDefaultAsync(diretor => diretor.Id == id);
-        var diretor = await _context.Diretores.FirstOrDefaultAsync(diretor => diretor.Id == id);
-        //return Ok(diretor);
-        var diretorOutputGetIdDTO = new DiretorOutputGetIdDTO (diretor.Id, diretor.Nome);
-        return Ok(diretorOutputGetIdDTO);
+        
+           var diretor = await _context.Diretores.FirstOrDefaultAsync(diretor => diretor.Id == id);
+            if (diretor == null){
+                return NotFound("Diretor Não Encontrado");
+            }
+            var diretorOutputGetIdDTO = new DiretorOutputGetIdDTO (diretor.Id, diretor.Nome);
+            return Ok(diretorOutputGetIdDTO); 
+               
     }
     
     [HttpGet]
     public async Task<List<DiretorOutputGetDTO>> Get() {
         var diretores = await _context.Diretores.ToListAsync();
         var outputDTOList = new List<DiretorOutputGetDTO>();
+        
         foreach (Diretor diretor in diretores){
+            
             outputDTOList.Add (new DiretorOutputGetDTO (diretor.Id,diretor.Nome));
-        }
+        } 
         
         return outputDTOList;
 
@@ -50,8 +54,11 @@ public class DiretorController : ControllerBase{
 
     [HttpPut("{id}")]
     public async Task<ActionResult<DiretorOutputPutDTO>> Put(long id, [FromBody] DiretorInputPutDTO diretorInputDto) {
-        var diretor = new Diretor(diretorInputDto.Nome);
+        var diretor = new Diretor(diretorInputDto.Nome);     
         diretor.Id = id;
+        /*if (diretor.Id == null){
+            return NotFound("Diretor Não Encontrado");
+        } */
         _context.Diretores.Update(diretor);
         await _context.SaveChangesAsync();
 
@@ -62,6 +69,9 @@ public class DiretorController : ControllerBase{
     [HttpDelete("{id}")]
     public async Task<ActionResult<DiretorOutputDeleteDTO>> Delete(long id) {
         var diretor = await _context.Diretores.FirstOrDefaultAsync(diretor => diretor.Id == id);
+        if (diretor == null){
+            return NotFound("Diretor Não Encontrado");
+        }
         _context.Remove(diretor);
         await _context.SaveChangesAsync();
         //return Ok();

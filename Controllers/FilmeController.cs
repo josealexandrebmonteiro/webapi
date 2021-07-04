@@ -17,16 +17,21 @@ public class FilmeController : ControllerBase{
     [HttpGet("{id}")]
     public async Task<ActionResult<FilmeOutputGetIdDTO>> GetById(long id)
     {
-         var filme = await _context.Filmes.Include(filme=>filme.Diretor).FirstOrDefaultAsync(filme => filme.Id == id);
-         //var filme = await _context.Filmes.FirstOrDefaultAsync(filme => filme.Id == id);
-         var filmeOutputGetIdDTO = new FilmeOutputGetIdDTO (filme.Id, filme.Titulo, filme.Diretor.Nome);
-         return Ok(filmeOutputGetIdDTO);
+
+        var filme = await _context.Filmes.Include(filme=>filme.Diretor).FirstOrDefaultAsync(filme => filme.Id == id);
+        if (filme == null){
+            return NotFound ("Filme Não Encontrado");
+        }
+        var filmeOutputGetIdDTO = new FilmeOutputGetIdDTO (filme.Id, filme.Titulo, filme.Diretor.Nome);
+        return Ok(filmeOutputGetIdDTO);
     }
     
     [HttpGet]
-    public async Task<List<FilmeOutPutGetDTO>> Get()
-    {
+    public async Task<List<FilmeOutPutGetDTO>> Get()  {
+               
+        
         var filmes =  await _context.Filmes.ToListAsync();
+        
         var outputDTOlist = new List<FilmeOutPutGetDTO>();
         foreach (Filme filme in filmes) {
             outputDTOlist.Add(new FilmeOutPutGetDTO(filme.Id, filme.Titulo));
@@ -62,6 +67,9 @@ public class FilmeController : ControllerBase{
     public async Task<ActionResult> Delete(int id)
     {
       var filme = await _context.Filmes.FirstOrDefaultAsync(filme => filme.Id == id);
+      if (filme == null){
+        return NotFound ("Filme Não Encontrado");
+      }
       _context.Remove(filme);
       await _context.SaveChangesAsync();
 
