@@ -54,6 +54,22 @@ public class DiretorController : ControllerBase{
     [HttpPost]
     public async Task<ActionResult<DiretorOutputPostDTO>> Post([FromBody] DiretorInputPostDTO diretorInputPostDTO)     
     {
+    /// <summary>
+    /// Cria um diretor
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     POST /diretor
+    ///     {
+    ///        "nome": "Martin Scorsese",
+    ///     }
+    ///
+    /// </remarks>
+    /// <param name="nome">Nome do diretor</param>
+    /// <returns>O diretor criado</returns>
+    /// <response code="200">Diretor foi criado com sucesso</response>
+        
         
         var diretor = new Diretor(diretorInputPostDTO.Nome);
         _context.Diretores.Add(diretor);
@@ -64,6 +80,7 @@ public class DiretorController : ControllerBase{
         return Ok(diretorOutputPostDTO);        
         
     }
+    
 
     [HttpPut("{id}")]
     public async Task<ActionResult<DiretorOutputPutDTO>> Put(long id, [FromBody] DiretorInputPutDTO diretorInputDto) 
@@ -78,7 +95,7 @@ public class DiretorController : ControllerBase{
         await _context.SaveChangesAsync();
 
         var diretorOutputDto = new DiretorOutputPutDTO(diretor.Id, diretor.Nome);
-        return Ok(diretorOutputDto);         
+        return Ok(diretorOutputDto);     
         
         
         

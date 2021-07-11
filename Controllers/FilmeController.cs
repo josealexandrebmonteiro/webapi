@@ -40,6 +40,12 @@ public class FilmeController : ControllerBase{
         foreach (Filme filme in filmes) {
             outputDTOlist.Add(new FilmeOutPutGetDTO(filme.Id, filme.Titulo));
         }
+        
+        if (!filmes.Any()) { //! inverte a condição
+            return NotFound ("Não Existe Diretores Cadastrados");
+        }
+        
+
         return outputDTOlist;      
                
         
