@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System;
 
+
 [ApiController]
 [Route("[controller]")]
 public class DiretorController : ControllerBase{
@@ -16,9 +17,19 @@ public class DiretorController : ControllerBase{
 
     }
 
+    /// <summary>
+    /// Localizar um Diretor
+    /// </summary>
+    /// <param name="id">Id Do Diretor</param>   
+    /// <returns>O diretor Encontrado</returns>
+    /// <response code="200">Diretor foi Encontrado com sucesso</response>
+    /// <response code="500">Erro interno inesperado</response>
+    /// <response code="400">Erro de validação</response>
+
     [HttpGet("{id}")]
     public async Task<ActionResult<DiretorOutputGetIdDTO>> GetById(long id)
     {
+    
         
             var diretor = await _context.Diretores.FirstOrDefaultAsync(diretor => diretor.Id == id);
             if (diretor == null){
@@ -30,10 +41,19 @@ public class DiretorController : ControllerBase{
             
                
     }
+
+    /// <summary>
+    /// Lista de Todos os Diretores
+    /// </summary>
+    /// <returns>Lista com todos diretores encontrados </returns>
+    /// <response code="200">Lista Retornada com sucesso</response>
+    /// <response code="500">Erro interno inesperado</response>
+    /// <response code="400">Erro de validação</response>
     
     [HttpGet]
     public async Task<ActionResult<List<DiretorOutputGetDTO>>> Get() 
     {
+    
             
         var diretores = await _context.Diretores.ToListAsync();
         var outputDTOList = new List<DiretorOutputGetDTO>();
@@ -51,9 +71,6 @@ public class DiretorController : ControllerBase{
         
     }
 
-    [HttpPost]
-    public async Task<ActionResult<DiretorOutputPostDTO>> Post([FromBody] DiretorInputPostDTO diretorInputPostDTO)     
-    {
     /// <summary>
     /// Cria um diretor
     /// </summary>
@@ -62,13 +79,20 @@ public class DiretorController : ControllerBase{
     ///
     ///     POST /diretor
     ///     {
-    ///        "nome": "Martin Scorsese",
+    ///        "nome": "David Yates"
     ///     }
     ///
     /// </remarks>
-    /// <param name="nome">Nome do diretor</param>
+    /// <param name="diretorInputPostDTO">Nome do diretor</param>
     /// <returns>O diretor criado</returns>
     /// <response code="200">Diretor foi criado com sucesso</response>
+    /// <response code="500">Erro interno inesperado</response>
+    /// <response code="400">Erro de validação</response>
+
+    [HttpPost]
+    public async Task<ActionResult<DiretorOutputPostDTO>> Post([FromBody] DiretorInputPostDTO diretorInputPostDTO)     
+    {
+    
         
         
         var diretor = new Diretor(diretorInputPostDTO.Nome);
@@ -81,16 +105,30 @@ public class DiretorController : ControllerBase{
         
     }
     
+    /// <summary>
+    /// Altera um Diretor
+    /// </summary>
+    /// <remarks>
+    /// Sample request:
+    ///
+    ///     PUT /diretor/ {id}
+    ///     {
+    ///        "nome": "David Yates",
+    ///     }
+    ///
+    /// </remarks>
+    /// <param name="id">Id Do Diretor</param>
+    /// <param name="diretorInputDto">Nome do diretor</param>
+    /// <returns>O diretor alterado</returns>
+    /// <response code="200">Diretor foi alterado com sucesso</response>
+    /// <response code="500">Erro interno inesperado</response>
+    /// <response code="400">Erro de validação</response>
 
     [HttpPut("{id}")]
     public async Task<ActionResult<DiretorOutputPutDTO>> Put(long id, [FromBody] DiretorInputPutDTO diretorInputDto) 
-    {
-        
+    {   
         var diretor = new Diretor(diretorInputDto.Nome);     
-        diretor.Id = id;
-        /*if (diretor.Id == null){
-            return NotFound("Diretor Não Encontrado");
-        } */
+        diretor.Id = id;     
         _context.Diretores.Update(diretor);
         await _context.SaveChangesAsync();
 
@@ -101,21 +139,22 @@ public class DiretorController : ControllerBase{
         
     }
 
+    /// <summary>
+    /// Apaga um Diretor
+    /// </summary>
+    /// <param name="id">Id Do Diretor</param>   
+    /// <returns>O diretor Apagado</returns>
+    /// <response code="200">Diretor foi apagado com sucesso</response>
+    /// <response code="500">Erro interno inesperado</response>
+    /// <response code="400">Erro de validação</response>
+
     [HttpDelete("{id}")]
-    public async Task<ActionResult<DiretorOutputDeleteDTO>> Delete(long id) 
-    {
+    public async Task<ActionResult> Delete(long id)  {
        
+        
         var diretor = await _context.Diretores.FirstOrDefaultAsync(diretor => diretor.Id == id);
-        if (diretor == null){
-            return NotFound("Diretor Não Encontrado");
-        }
         _context.Remove(diretor);
         await _context.SaveChangesAsync();
-        //return Ok();
-
-        var diretorOutputDeleteDTO = new DiretorOutputDeleteDTO (diretor.Id, diretor.Nome);
-        return Ok(diretorOutputDeleteDTO);       
-        
-
+        return Ok();
     }
 }
