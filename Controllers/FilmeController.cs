@@ -90,10 +90,12 @@ public class FilmeController : ControllerBase{
     [HttpPost]
     public async Task <ActionResult<FilmeOutputPostDTO>> Post ([FromBody] FilmeInputPostDTO filmeInputPostDTO){        
         
-        var diretor = await _context.Diretores.FirstOrDefaultAsync (diretor => diretor.Id == filmeInputPostDTO.DiretorId);
+        var diretor = await _context.Diretores.FirstOrDefaultAsync(diretor => diretor.Id == filmeInputPostDTO.DiretorId);
+
         if (diretor == null){
             return NotFound("Diretor Não Encontrado");
         }
+        
         var filme = new Filme(filmeInputPostDTO.Titulo, diretor.Id);
         _context.Filmes.Add (filme);
         await _context.SaveChangesAsync();
