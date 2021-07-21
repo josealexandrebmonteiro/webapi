@@ -16,4 +16,5 @@ public class FilmeInputPutDTO {
           RuleFor(filme => filme.Titulo).Length(5,50).WithMessage("Tamanho {TotalLength} é invalido");
           RuleFor(filme => filme.DiretorId).NotNull().NotEmpty();
      }
+     }
 }
