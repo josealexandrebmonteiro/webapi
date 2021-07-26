@@ -14,7 +14,7 @@ public class DiretorController : ControllerBase {
     private readonly IDiretorService _diretorService;
 
     public DiretorController(ApplicationDbContext context, IDiretorService diretorService) {
-        _context = context;
+        //_context = context;
         _diretorService = diretorService;
     }
 

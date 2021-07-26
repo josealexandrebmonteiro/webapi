@@ -16,8 +16,9 @@ public class FilmeController : ControllerBase{
 
 
     public FilmeController(ApplicationDbContext context, IFilmeService filmerService) {
-        _context = context;
+        //_context = context;
         _filmeService = filmerService;
+        
 
     }
 
@@ -70,10 +71,9 @@ public class FilmeController : ControllerBase{
 
     [HttpPost]
     public async Task <ActionResult<FilmeOutputPostDTO>> Post ([FromBody] FilmeInputPostDTO filmeInputPostDTO) {
-        var diretor = await _context.Diretores.FirstOrDefaultAsync(diretor => diretor.Id == filmeInputPostDTO.DiretorId); //verificar
-        var filme = await _filmeService.Cria(new Filme (filmeInputPostDTO.Titulo, diretor.Id));
+         var filme = await _filmeService.Cria(new Filme (filmeInputPostDTO.Titulo, filmeInputPostDTO.DiretorId));
         var filmeOutputDto = new FilmeOutputPostDTO (filme.Id, filme.Titulo);
-        return Ok(filmeOutputDto);
+        return Ok(filmeOutputDto); 
     }
 
     /// <summary>
